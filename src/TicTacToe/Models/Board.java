@@ -23,13 +23,13 @@ public class Board {
         for(List<Cell> row : board) {
             for (Cell cell : row) {
                 if (cell.getPlayer() == null) {
-                    System.out.println("| - |");
+                    System.out.print("| - |");
                 }
                 else {
-                    System.out.println("| " + cell.getPlayer().getSymbol().getaChar() + " |");
+                    System.out.print("| " + cell.getPlayer().getSymbol().getaChar() + " |");
                 }
-                System.out.println();
             }
+            System.out.println();
         }
     }
 

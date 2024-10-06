@@ -9,7 +9,7 @@ import TicTacToe.Models.GameState;
 import TicTacToe.Models.Player;
 import TicTacToe.Models.PlayerType;
 import TicTacToe.Models.Symbol;
-import TicTacToe.Stratergies.WinningStrategy.WinningStrategy;
+import TicTacToe.Strategies.WinningStrategy.WinningStrategy;
 
 public class Client {
     public static void main(String[] args) throws Exception {

@@ -8,7 +8,7 @@ import java.util.Map;
 import Exceptions.BotCountException;
 import Exceptions.PlayerCountException;
 import Exceptions.SymbolCountException;
-import TicTacToe.Stratergies.WinningStratergy.WinningStratergy;
+import TicTacToe.Strategies.WinningStrategy.WinningStrategy;
 
 public class Game {
     private List<Player> players;
@@ -17,12 +17,12 @@ public class Game {
     private GameState gameStatus;
     private Player winner;
     private int nextPlayerTurnIndex;
-    private List<WinningStratergy> winningStratergies;
+    private List<WinningStrategy> winningStrategy;
 
-    public Game(int dimentions, List<Player> players, List<WinningStratergy> winningStratergies) {
+    public Game(int dimentions, List<Player> players, List<WinningStrategy> winningStrategy) {
         this.board = new Board(dimentions);
         this.players = players;
-        this.winningStratergies = winningStratergies;
+        this.winningStrategy = winningStrategy;
         this.moves = new ArrayList<>();
         this.gameStatus = GameState.IN_PROGRESS;
         this.nextPlayerTurnIndex = 0;
@@ -37,11 +37,11 @@ public class Game {
     public static class Builder {
         private int dimentions;
         private List<Player> players;
-        private List<WinningStratergy> winningStratergies;
+        private List<WinningStrategy> winningStrategy;
 
         public Game build() throws PlayerCountException, BotCountException , SymbolCountException{
             validate();
-            return new Game(dimentions, players, winningStratergies);
+            return new Game(dimentions, players, winningStrategy);
         }
 
         private void validate() throws PlayerCountException, BotCountException , SymbolCountException{
@@ -92,22 +92,22 @@ public class Game {
             this.players = players;
             return this;
         }
-        public List<WinningStratergy> getWinningStratergies() {
-            return winningStratergies;
+        public List<WinningStrategy> getWinningStrategy() {
+            return winningStrategy;
         }
-        public Builder setWinningStratergies(List<WinningStratergy> winningStratergies) {
-            this.winningStratergies = winningStratergies;
+        public Builder setWinningStratergies(List<WinningStrategy> winningStrategy) {
+            this.winningStrategy= winningStrategy;
             return this;
         }
         
     }
 
 
-    public List<WinningStratergy> getWinningStratergies() {
-        return winningStratergies;
+    public List<WinningStrategy> getWinningStrategy() {
+        return winningStrategy;
     }
-    public void setWinningStratergies(List<WinningStratergy> winningStratergies) {
-        this.winningStratergies = winningStratergies;
+    public void setWinningStratergies(List<WinningStrategy> winningStrategy) {
+        this.winningStrategy = winningStrategy;
     }
     public List<Player> getPlayers() {
         return players;
@@ -172,6 +172,25 @@ public class Game {
         moves.add(actualMove);
 
         nextPlayerTurnIndex += 1;
+        nextPlayerTurnIndex = nextPlayerTurnIndex % players.size();
+
+        if(checkWinner(move)) {
+            setGameState(GameState.WIN);
+            setWinner(currentPlayer);
+        }
+
+        if(moves.size() == board.getSize() * board.getSize()) {
+            setGameState(GameState.DRAW);
+            System.out.println("Game has been drawn");
+        }
+    }
+
+    public boolean checkWinner(Move move) {
+        for(WinningStrategy winningStrategy : winningStrategy) {
+            if(winningStrategy.checkWinner(board, move))
+                return true;
+        }
+        return false;
     }
     public boolean validateMove(Move move) {
         int row = move.getCell().getRow();

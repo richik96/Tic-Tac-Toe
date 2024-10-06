@@ -9,17 +9,17 @@ import Exceptions.SymbolCountException;
 import TicTacToe.Models.Game;
 import TicTacToe.Models.GameState;
 import TicTacToe.Models.Player;
-import TicTacToe.Stratergies.WinningStratergy.WinningStratergy;
+import TicTacToe.Strategies.WinningStrategy.WinningStrategy;
 
 public class GameController {
 
     public static Game startGame(int dimentions, List<Player> players, 
-                                            List<WinningStratergy> winningStratergies) 
+                                            List<WinningStrategy> winningStrategies) 
                                             throws PlayerCountException, BotCountException , SymbolCountException{
 
         return Game.getBuilder().setDimentions(dimentions)
                                     .setPlayers(players)
-                                    .setWinningStratergies(winningStratergies)
+                                    .setWinningStratergies(winningStrategies)
                                     .build();
 
     }
@@ -41,5 +41,9 @@ public class GameController {
 
     public void undo() {
 
+    }
+
+    public Player getWinner(Game game) {
+        return game.getWinner();
     }
 }

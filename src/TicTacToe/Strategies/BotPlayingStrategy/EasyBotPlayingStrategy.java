@@ -1,4 +1,4 @@
-package TicTacToe.Stratergies.BotPlayingStratergy;
+package TicTacToe.Strategies.BotPlayingStrategy;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import TicTacToe.Models.Cell;
 import TicTacToe.Models.CellState;
 import TicTacToe.Models.Move;
 
-public class EasyBotPlayingStratergy implements BotPlayingStratergy{
+public class EasyBotPlayingStrategy implements BotPlayingStrategy{
 
     @Override
     public Move makeMove(Board board) {

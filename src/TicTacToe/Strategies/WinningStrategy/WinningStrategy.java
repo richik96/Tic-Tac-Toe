@@ -1,4 +1,4 @@
-package TicTacToe.Stratergies.WinningStrategy;
+package TicTacToe.Strategies.WinningStrategy;
 
 import TicTacToe.Models.Board;
 import TicTacToe.Models.Move;
