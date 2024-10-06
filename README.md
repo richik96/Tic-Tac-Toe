@@ -1,5 +1,6 @@
-### Project - Tic-Tac-Toe Backend
+# Project - Tic-Tac-Toe Backend
 =====================================
+
 Simple java project utilizing MVC architecture.
 
 
