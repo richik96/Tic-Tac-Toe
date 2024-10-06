@@ -12,5 +12,9 @@ public class Symbol {
         this.aChar = aChar;
     }
 
+    public Symbol(char aChar) {
+        this.aChar = aChar;
+    }
+
     
 }

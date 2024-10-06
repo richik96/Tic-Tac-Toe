@@ -7,7 +7,7 @@ public class Board {
 
     private int size;
     private List<List<Cell>> board;
-    private Board(int dimentions) {
+    public Board(int dimentions) {
         this.size = dimentions;
         this.board = new ArrayList<>();
         
@@ -15,6 +15,20 @@ public class Board {
             board.add(new ArrayList<>());
             for(int j=0; j<size; j++) {
                 board.get(i).add(new Cell(i, j));
+            }
+        }
+    }
+
+    public void displayBoard() {
+        for(List<Cell> row : board) {
+            for (Cell cell : row) {
+                if (cell.getPlayer() == null) {
+                    System.out.println("| - |");
+                }
+                else {
+                    System.out.println("| " + cell.getPlayer().getSymbol().getaChar() + " |");
+                }
+                System.out.println();
             }
         }
     }

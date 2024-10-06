@@ -19,8 +19,8 @@ public class Game {
     private int nextPlayerTurnIndex;
     private List<WinningStratergy> winningStratergies;
 
-    private Game(int dimentions, List<Player> players, List<WinningStratergy> winningStratergies) {
-        board = new Board(dimentions);
+    public Game(int dimentions, List<Player> players, List<WinningStratergy> winningStratergies) {
+        this.board = new Board(dimentions);
         this.players = players;
         this.winningStratergies = winningStratergies;
         this.moves = new ArrayList<>();
@@ -39,7 +39,7 @@ public class Game {
         private List<Player> players;
         private List<WinningStratergy> winningStratergies;
 
-        private Game build() throws PlayerCountException, BotCountException , SymbolCountException{
+        public Game build() throws PlayerCountException, BotCountException , SymbolCountException{
             validate();
             return new Game(dimentions, players, winningStratergies);
         }
@@ -127,10 +127,10 @@ public class Game {
     public void setMoves(List<Move> moves) {
         this.moves = moves;
     }
-    public GameState getGameStatus() {
+    public GameState getGameState() {
         return gameStatus;
     }
-    public void setGameStatus(GameState gameStatus) {
+    public void setGameState(GameState gameStatus) {
         this.gameStatus = gameStatus;
     }
     public Player getWinner() {
@@ -145,5 +145,46 @@ public class Game {
     public void setNextPlayerTurnIndex(int nextPlayerTurnIndex) {
         this.nextPlayerTurnIndex = nextPlayerTurnIndex;
     }
-    
+
+    public void displayBoard() {
+        this.board.displayBoard();
+    }
+
+    public void makeMove() {
+        Player currentPlayer = players.get(nextPlayerTurnIndex);
+        System.out.println("It is "+currentPlayer.getName() + "'s Move");
+        Move move = currentPlayer.makeMove(board);
+
+        System.out.println(currentPlayer.getName() +" has made a move at " + move.getCell().getRow() + ", " + move.getCell().getColumn());
+
+        if(!validateMove(move)) {
+            System.out.println("Invalid move, please try again");
+            return;
+        }
+
+        int row = move.getCell().getRow();
+        int column = move.getCell().getColumn();
+
+        Cell actuaCellofBoard = board.getCells().get(row).get(column);
+        actuaCellofBoard.setCellState(CellState.FILLED);
+        actuaCellofBoard.setPlayer(currentPlayer);
+        Move actualMove = new Move(actuaCellofBoard, currentPlayer);
+        moves.add(actualMove);
+
+        nextPlayerTurnIndex += 1;
+    }
+    public boolean validateMove(Move move) {
+        int row = move.getCell().getRow();
+        int column = move.getCell().getColumn();
+
+        if(row < 0 || row >= board.getSize() || column < 0 || column >= board.getSize()) { //user trying to make move outside of the board
+            System.out.println("Invalid Move, Please try again");
+            return false;
+        }
+        if(board.getCells().get(row).get(column).getCellState().equals(CellState.FILLED)) { //
+            System.out.println("Cell already occupied, Please try again");
+            return false;
+        }
+        return true;
+    }
 }
