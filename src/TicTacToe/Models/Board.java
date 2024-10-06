@@ -1,0 +1,36 @@
+package TicTacToe.Models;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Board {
+
+    private int size;
+    private List<List<Cell>> board;
+    private Board(int dimentions) {
+        this.size = dimentions;
+        this.board = new ArrayList<>();
+        
+        for(int i=0; i<size; i++) {
+            board.add(new ArrayList<>());
+            for(int j=0; j<size; j++) {
+                board.get(i).add(new Cell(i, j));
+            }
+        }
+    }
+
+    public int getSize() {
+        return size;
+    }
+    public void setSize(int size) {
+        this.size = size;
+    }
+    public List<List<Cell>> getCells() {
+        return board;
+    }
+    public void setCells(List<List<Cell>> cells) {
+        this.board = cells;
+    }
+
+    
+}
