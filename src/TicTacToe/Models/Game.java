@@ -8,7 +8,7 @@ import java.util.Map;
 import Exceptions.BotCountException;
 import Exceptions.PlayerCountException;
 import Exceptions.SymbolCountException;
-import TicTacToe.Stratergies.WinningStratergy.WinningStratergy;
+import TicTacToe.Strategies.WinningStrategy.WinningStrategy;
 
 public class Game {
     private List<Player> players;
@@ -17,12 +17,12 @@ public class Game {
     private GameState gameStatus;
     private Player winner;
     private int nextPlayerTurnIndex;
-    private List<WinningStratergy> winningStratergies;
+    private List<WinningStrategy> winningStrategy;
 
-    private Game(int dimentions, List<Player> players, List<WinningStratergy> winningStratergies) {
-        board = new Board(dimentions);
+    public Game(int dimentions, List<Player> players, List<WinningStrategy> winningStrategy) {
+        this.board = new Board(dimentions);
         this.players = players;
-        this.winningStratergies = winningStratergies;
+        this.winningStrategy = winningStrategy;
         this.moves = new ArrayList<>();
         this.gameStatus = GameState.IN_PROGRESS;
         this.nextPlayerTurnIndex = 0;
@@ -37,11 +37,11 @@ public class Game {
     public static class Builder {
         private int dimentions;
         private List<Player> players;
-        private List<WinningStratergy> winningStratergies;
+        private List<WinningStrategy> winningStrategy;
 
-        private Game build() throws PlayerCountException, BotCountException , SymbolCountException{
+        public Game build() throws PlayerCountException, BotCountException , SymbolCountException{
             validate();
-            return new Game(dimentions, players, winningStratergies);
+            return new Game(dimentions, players, winningStrategy);
         }
 
         private void validate() throws PlayerCountException, BotCountException , SymbolCountException{
@@ -92,22 +92,22 @@ public class Game {
             this.players = players;
             return this;
         }
-        public List<WinningStratergy> getWinningStratergies() {
-            return winningStratergies;
+        public List<WinningStrategy> getWinningStrategy() {
+            return winningStrategy;
         }
-        public Builder setWinningStratergies(List<WinningStratergy> winningStratergies) {
-            this.winningStratergies = winningStratergies;
+        public Builder setWinningStratergies(List<WinningStrategy> winningStrategy) {
+            this.winningStrategy= winningStrategy;
             return this;
         }
         
     }
 
 
-    public List<WinningStratergy> getWinningStratergies() {
-        return winningStratergies;
+    public List<WinningStrategy> getWinningStrategy() {
+        return winningStrategy;
     }
-    public void setWinningStratergies(List<WinningStratergy> winningStratergies) {
-        this.winningStratergies = winningStratergies;
+    public void setWinningStratergies(List<WinningStrategy> winningStrategy) {
+        this.winningStrategy = winningStrategy;
     }
     public List<Player> getPlayers() {
         return players;
@@ -127,10 +127,10 @@ public class Game {
     public void setMoves(List<Move> moves) {
         this.moves = moves;
     }
-    public GameState getGameStatus() {
+    public GameState getGameState() {
         return gameStatus;
     }
-    public void setGameStatus(GameState gameStatus) {
+    public void setGameState(GameState gameStatus) {
         this.gameStatus = gameStatus;
     }
     public Player getWinner() {
@@ -145,5 +145,65 @@ public class Game {
     public void setNextPlayerTurnIndex(int nextPlayerTurnIndex) {
         this.nextPlayerTurnIndex = nextPlayerTurnIndex;
     }
-    
+
+    public void displayBoard() {
+        this.board.displayBoard();
+    }
+
+    public void makeMove() {
+        Player currentPlayer = players.get(nextPlayerTurnIndex);
+        System.out.println("It is "+currentPlayer.getName() + "'s Move");
+        Move move = currentPlayer.makeMove(board);
+
+        System.out.println(currentPlayer.getName() +" has made a move at " + move.getCell().getRow() + ", " + move.getCell().getColumn());
+
+        if(!validateMove(move)) {
+            System.out.println("Invalid move, please try again");
+            return;
+        }
+
+        int row = move.getCell().getRow();
+        int column = move.getCell().getColumn();
+
+        Cell actuaCellofBoard = board.getCells().get(row).get(column);
+        actuaCellofBoard.setCellState(CellState.FILLED);
+        actuaCellofBoard.setPlayer(currentPlayer);
+        Move actualMove = new Move(actuaCellofBoard, currentPlayer);
+        moves.add(actualMove);
+
+        nextPlayerTurnIndex += 1;
+        nextPlayerTurnIndex = nextPlayerTurnIndex % players.size();
+
+        if(checkWinner(move)) {
+            setGameState(GameState.WIN);
+            setWinner(currentPlayer);
+        }
+
+        if(moves.size() == board.getSize() * board.getSize()) {
+            setGameState(GameState.DRAW);
+            System.out.println("Game has been drawn");
+        }
+    }
+
+    public boolean checkWinner(Move move) {
+        for(WinningStrategy winningStrategy : winningStrategy) {
+            if(winningStrategy.checkWinner(board, move))
+                return true;
+        }
+        return false;
+    }
+    public boolean validateMove(Move move) {
+        int row = move.getCell().getRow();
+        int column = move.getCell().getColumn();
+
+        if(row < 0 || row >= board.getSize() || column < 0 || column >= board.getSize()) { //user trying to make move outside of the board
+            System.out.println("Invalid Move, Please try again");
+            return false;
+        }
+        if(board.getCells().get(row).get(column).getCellState().equals(CellState.FILLED)) { //
+            System.out.println("Cell already occupied, Please try again");
+            return false;
+        }
+        return true;
+    }
 }
