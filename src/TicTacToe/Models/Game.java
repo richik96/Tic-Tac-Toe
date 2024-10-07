@@ -17,16 +17,33 @@ public class Game {
     private GameState gameStatus;
     private Player winner;
     private int nextPlayerTurnIndex;
-    private List<WinningStrategy> winningStrategy;
+    private List<WinningStrategy> winningStrategies;
 
     public Game(int dimentions, List<Player> players, List<WinningStrategy> winningStrategy) {
         this.board = new Board(dimentions);
         this.players = players;
-        this.winningStrategy = winningStrategy;
+        this.winningStrategies = winningStrategy;
         this.moves = new ArrayList<>();
         this.gameStatus = GameState.IN_PROGRESS;
         this.nextPlayerTurnIndex = 0;
         
+    }
+
+    public void undo() {
+        if(moves.size() == 0) {
+            System.out.println("No moves to undo");
+            return;
+        }
+        Move lastMove = moves.get(moves.size()-1);
+        Cell cell = lastMove.getCell();
+        cell.setCellState(CellState.EMPTY);
+        for(WinningStrategy winningStrategy : winningStrategies) {
+            winningStrategy.undo(board, lastMove);
+        }
+        cell.setPlayer(null);
+        moves.remove(moves.size()-1);
+        nextPlayerTurnIndex -= 1;
+        nextPlayerTurnIndex = (nextPlayerTurnIndex + players.size()) % players.size();
     }
 
     //verify the client inputs ---> builder design pattern
@@ -104,10 +121,10 @@ public class Game {
 
 
     public List<WinningStrategy> getWinningStrategy() {
-        return winningStrategy;
+        return winningStrategies;
     }
     public void setWinningStratergies(List<WinningStrategy> winningStrategy) {
-        this.winningStrategy = winningStrategy;
+        this.winningStrategies = winningStrategy;
     }
     public List<Player> getPlayers() {
         return players;
@@ -187,7 +204,7 @@ public class Game {
     }
 
     public boolean checkWinner(Move move) {
-        for(WinningStrategy winningStrategy : winningStrategy) {
+        for(WinningStrategy winningStrategy : winningStrategies) {
             if(winningStrategy.checkWinner(board, move))
                 return true;
         }
@@ -206,5 +223,9 @@ public class Game {
             return false;
         }
         return true;
+    }
+
+    public void undo(Game game) {
+        
     }
 }

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import TicTacToe.Controllers.GameController;
 import TicTacToe.Models.Bot;
@@ -18,6 +19,7 @@ public class Client {
     public static void main(String[] args) throws Exception {
         
         GameController gameController = new GameController();
+        Scanner sc = new Scanner(System.in);
 
         try {
             int dimentions = 3;
@@ -33,6 +35,13 @@ public class Client {
 
             while(gameController.checkState(game).equals(GameState.IN_PROGRESS)) {
                 gameController.displayBoard(game);
+
+                System.out.println("Do you want to do an undo (y/n)");
+                String ans = sc.next();
+                if(ans.equalsIgnoreCase("y")) {
+                    gameController.undo(game);
+                    continue;
+                }
                 gameController.makeMove(game);
             }
 

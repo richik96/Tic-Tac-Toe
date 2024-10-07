@@ -9,7 +9,7 @@ import TicTacToe.Models.Symbol;
 
 public class RowWinningStrategy implements WinningStrategy{
 
-    Map<Integer, Map<Symbol, Integer>> counts = new HashMap<>();
+    Map<Integer, Map<Symbol, Integer>> counts = new HashMap<> ();
 
     @Override
     public boolean checkWinner(Board board, Move move) {
@@ -27,5 +27,13 @@ public class RowWinningStrategy implements WinningStrategy{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void undo(Board board, Move move) {
+        int row = move.getCell().getRow();
+        Symbol symbol = move.getPlayer().getSymbol();
+        Map<Symbol, Integer> rowMap = counts.get(row);
+        rowMap.put(symbol, rowMap.get(symbol)-1);
     }
 }

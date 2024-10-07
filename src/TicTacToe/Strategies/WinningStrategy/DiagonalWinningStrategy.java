@@ -1,8 +1,7 @@
 package TicTacToe.Strategies.WinningStrategy;
 
-import java.util.HashMap;
 import java.util.Map;
-
+import java.util.HashMap;
 import TicTacToe.Models.Board;
 import TicTacToe.Models.Move;
 import TicTacToe.Models.Symbol;
@@ -39,6 +38,19 @@ public class DiagonalWinningStrategy implements WinningStrategy{
         }
 
         return false;
+    }
+
+    @Override
+    public void undo(Board board, Move move) {
+        int row = move.getCell().getRow();
+        int col = move.getCell().getColumn();
+        Symbol symbol = move.getPlayer().getSymbol();
+        if(row == col) {
+            leftDiagonalMap.put(symbol, leftDiagonalMap.get(symbol)-1);
+        }
+        if(row+col == board.getSize() - 1) {
+            rightDiagonalMap.put(symbol, rightDiagonalMap.get(symbol)-1);
+        }
     }
 
 }

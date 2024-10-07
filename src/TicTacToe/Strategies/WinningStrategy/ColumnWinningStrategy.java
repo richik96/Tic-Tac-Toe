@@ -14,6 +14,7 @@ public class ColumnWinningStrategy implements WinningStrategy{
      *     {0 -> { X -> 0, 0 -> 2}}
      *    {1 -> { X -> 0, 0 -> 2}}
      *    {2 -> {X-> 2, 0 -> 2}}
+
      * }
      */
     Map<Integer, Map<Symbol, Integer>> counts = new HashMap<> ();
@@ -35,6 +36,14 @@ public class ColumnWinningStrategy implements WinningStrategy{
         }
 
         return false;
+    }
+
+    @Override
+    public void undo(Board board, Move move) {
+        int col = move.getCell().getColumn();
+        Symbol symbol = move.getPlayer().getSymbol();
+        Map<Symbol, Integer> colMap = counts.get(col);
+        colMap.put(symbol, colMap.get(symbol)-1);
     }
 
 }
